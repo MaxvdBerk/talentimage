@@ -1,0 +1,122 @@
+swagger: "2.0"
+info: 
+  description: "The YAML file of the experience API of facial recognition app"
+  version: "1.0"
+  title: "Experience API"
+tags:
+- name: "image"
+  description: "the photo that will be send to Watson"
+- name: "title"
+  description: "classification of the image"
+- name: "chance"
+  description: "the chance the watson correctly classified the image"
+- name: "count"
+  description: "the number of times Watson recognized the same image type"
+schemes: 
+- "https"
+- "http"
+paths:
+  /image:
+    post: 
+      tags: 
+      - "image"
+      summary: "posts image to Watson"
+      operationId: "postImage"
+      consumes:
+      - "multipart/form-data"
+      produces: 
+      - "application/json"
+      parameters: 
+      - in: "formData"
+        name: "file"
+        description: "image that needs to be posted"
+        required: true
+        type: "file"
+        format: "PNG, JPEG, JPG"
+      responses: 
+        200:
+          description: "succesfull operation"
+        405: 
+          description: "Invalid input"
+        default: 
+          description: "Unexpected error"
+  /title:
+    post: 
+      tags: 
+      - "title"
+      summary: "posts title of image"
+      operationId: "postTitle"
+      consumes:
+      - "application/json"
+      produces: 
+      - "application/json"
+      parameters: 
+      - in: "header"
+        name: "header"
+        description: "header of the title"
+        required: true
+        type: "string"
+        format: "json"
+      responses: 
+        200:
+          schema: 
+            $ref: "#/definitions/response"
+          description: "succesfull operation"
+  /chance:
+    post: 
+      tags: 
+      - "chance"
+      summary: "the chance the watson correctly classified the image"
+      operationId: "postChance"
+      consumes:
+      - "application/json"
+      produces: 
+      - "application/json"
+      parameters: 
+      - in: "body"
+        name: "chanceBody"
+        description: "gives the chance"
+        required: true
+        schema:
+          $ref: "#/definitions/body"
+      responses: 
+        405:
+          description: "Invalid input"
+        default: 
+          description: "Unexpected error"
+  /count:
+    post: 
+      tags: 
+      - "count"
+      summary: "posts title of image"
+      operationId: "postCount"
+      consumes:
+      - "application/json"
+      produces: 
+      - "application/json"
+      parameters: 
+      - in: "body"
+        name: "countBody"
+        description: "gives the count"
+        required: true
+        schema:
+          $ref: "#/definitions/body"
+      responses: 
+        405:
+          description: "Invalid input"
+        default: 
+          description: "Unexpected error"
+definitions:
+  response: 
+    type: "object"
+    properties:
+      title:
+        type: "string"
+      chance:
+        type: "integer"
+        format: "int64"
+      count: 
+        type: "integer"
+        format: "int64"
+  body:
+    type: "string"
