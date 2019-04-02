@@ -1,62 +1,49 @@
-openapi: 3.0.0
+swagger: "2.0"
 info:
-  title: WatsonSystemApi
-  description: The interface between the Master API and Watson
-  version: 0.1.9
-
-servers:
-  - url: http://watsonsystemapi.example.com/
-    description: The url of the api.
-
-  /inputplaatje/{catagorie}:
+  description: "the interface between the Master API and Watson"
+  version: "1.0.0"
+  title: "WatsonSystemAPi"
+host: "cloud.something.ai"
+basePath: "/v1"
+schemes:
+- "http"
+paths:
+  /inputpicture/{categorie}:
     post:
-      summary: receives the picture to and send it to Watson
+      tags:
+      - "input"
+      summary: "receives the picture to and send it to Watson"
+      description: ""
+      operationId: "inputpicture"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
       parameters:
-        - name: catagorie
-          in: path
-          required: true
-          description: The catagorie of where to find the answer bv "fruit"
-          schema:
-            type: picture
-            format: [.jpg, .jpeg, png]
-            minimum: 1
-            maximum: 1
+      - name: "categorie"
+        in: "path"
+        description: "The catagorie of where to find the answer bv fruit"
+        required: true
+        type: "string"
+      - name: "file"
+        in: "formData"
+        description: "file to upload"
+        required: false
+        type: "file"
       responses:
-        '200':
-          description: The result of Watson.
-          content: 
-            application/json: JSON
-              schema:
-                type: object
-                properties:
-                  catagorie:
-                    type: string
-                    example: "banana"
-                  score:
-                    description: number between zero and one
-                    type: float
-                    example: 0.224625
-        '400':
-          description: The given input is not a right picture.
-        default:
-          description: Unexpected error
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Response"
+        405:
+          description: "Invalid input"
 definitions:
-  inputplaatje:
-    required:
-      - catagorie
-      - score
+  Response:
+    type: "object"
     properties:
-      catagorie:
-        type: string
+      categorie:
+        type: "string"
+        example: "banana"
       score:
-        type: float
-  Error:
-    required:
-      - code
-      - message
-    properties:
-      code:
-        type: integer
-        format: int32
-      message:
-        type: string
+        type: "number"
+        format: "float"
