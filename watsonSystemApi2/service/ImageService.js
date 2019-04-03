@@ -23,6 +23,7 @@ exports.image = function(file2) {
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
+
       resolve();
     }
   });
@@ -31,6 +32,7 @@ exports.image = function(file2) {
 
 
 function handleWatson(incomingfile, callback) {
+
   var VisualRecognitionV3 = require('watson-developer-cloud/visual-recognition/v3');
 
   var visualRecognition = new VisualRecognitionV3({
@@ -48,14 +50,14 @@ function handleWatson(incomingfile, callback) {
     threshold: threshold
   };
 
+  
   visualRecognition.classify(params, function(err, response) {
     if (err) {
         console.log(err);
     } else {
-      
       console.log(JSON.stringify(response, null, 2));
-
     }
   });
+
 };
 
