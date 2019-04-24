@@ -2,7 +2,7 @@ var Request = require("request");
 var express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
-var mongoURL = "http://mongodb01.eu-gb.mybluemix.net/api/Images"; // restApiRoot (/api), localhost and port from config.json (talentimage/Mongodb/ServerMongoFoto/server/)
+var mongoURL = "https://mongodb01-grouchy-oribi.eu-gb.mybluemix.net/api/Images"; // restApiRoot (/api), localhost and port from config.json (talentimage/Mongodb/ServerMongoFoto/server/)
 var serverPort = process.env.PORT || 4000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -30,19 +30,20 @@ app.post('/post', function (req, res) {
 
             Response.Image = JSON.parse(body);
 
-            console.log(Response.Image);
+            // console.log(Response.Image);
+
+            Request.get(mongoURL, (error, response, body) => {
+                if (error) {
+                    return console.dir(error);
+                }
+                var jsondata = JSON.parse(body);
+                newBody = jsondata.filter(function (o) {
+                    return (o.class === mongoclass)
+                })
+                Response.Count = newBody.length;
+                // console.log(Response.Count);
+            });
         })
-        .pipe(Request.get(mongoURL, (error, response, body) => {
-            if (error) {
-                return console.dir(error);
-            }
-            var jsondata = JSON.parse(body);
-            newBody = jsondata.filter(function (o) {
-                return (o.class === mongoclass)
-            })
-            Response.Count = newBody.length;
-            console.log(Response.Count);
-        }));
 
     //send response to processAPI; timeout so mongo can respond ^^
     res.setTimeout(500, function () {
