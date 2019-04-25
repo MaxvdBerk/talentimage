@@ -8,7 +8,7 @@ var serverPort = process.env.PORT || 4000;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-function MaakderWatMooisVan(ObjectMongoCount,Class,error) {
+function MaakderWatMooisVan(ObjectMongoCount, Class, error) {
     if (error) {
         return console.dir(error);
     }
@@ -19,7 +19,7 @@ function MaakderWatMooisVan(ObjectMongoCount,Class,error) {
     Response.Count = newBody.length;
 }
 
-async function Controller(Obj, Class,res) {
+async function Controller(Obj, Class, res) {
     let Inputresult = await Request.post({
         "headers": { "content-type": "application/json" },
         "url": mongoURL,
@@ -30,9 +30,9 @@ async function Controller(Obj, Class,res) {
         }
         Response.Image = JSON.parse(body);
     })
-    
+
     let CountObject = await Request.get(mongoURL);
-    await MaakderWatMooisVan(CountObject,Class);
+    await MaakderWatMooisVan(CountObject, Class);
     await res.send(JSON.stringify(Response));
 }
 
@@ -44,8 +44,6 @@ app.post('/post', function (req, res) {
     Response.Image = Object;
     Response.Count = Number;
     Response = Controller(mongo, mongoclass, res);
-    // res.send(JSON.stringify(Response));
-        
 });
 
 app.listen(serverPort, function () {
