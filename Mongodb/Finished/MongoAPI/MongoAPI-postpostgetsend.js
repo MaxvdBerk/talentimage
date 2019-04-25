@@ -1,12 +1,40 @@
-var Request = require("request");
+var Request = require("request-promise");
 var express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
-var mongoURL = "http://mongodb01.eu-gb.mybluemix.net/api/Images"; // restApiRoot (/api), localhost and port from config.json (talentimage/Mongodb/ServerMongoFoto/server/)
+var mongoURL = "http://mongodb01-grouchy-oribi.eu-gb.mybluemix.net/api/Images"; // restApiRoot (/api), localhost and port from config.json (talentimage/Mongodb/ServerMongoFoto/server/)
 var serverPort = process.env.PORT || 4000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+function MaakderWatMooisVan(ObjectMongoCount,Class,error) {
+    if (error) {
+        return console.dir(error);
+    }
+    var jsondata = JSON.parse(ObjectMongoCount);
+    newBody = jsondata.filter(function (o) {
+        return (o.class === Class)
+    })
+    Response.Count = newBody.length;
+}
+
+async function Controller(Obj, Class,res) {
+    let Inputresult = await Request.post({
+        "headers": { "content-type": "application/json" },
+        "url": mongoURL,
+        "body": JSON.stringify(Obj)
+    }, (error, response, body) => {
+        if (error) {
+            return console.dir(error);
+        }
+        Response.Image = JSON.parse(body);
+    })
+    
+    let CountObject = await Request.get(mongoURL);
+    await MaakderWatMooisVan(CountObject,Class);
+    await res.send(JSON.stringify(Response));
+}
 
 //incoming request from processAPI at /post endpoint:
 app.post('/post', function (req, res) {
@@ -15,42 +43,11 @@ app.post('/post', function (req, res) {
     Response = new Object;
     Response.Image = Object;
     Response.Count = Number;
-
-
-    // make post+get request to MongoDB with request body from processAPI 
-    Request
-        .post({
-            "headers": { "content-type": "application/json" },
-            "url": mongoURL,
-            "body": JSON.stringify(mongo)
-        }, (error, response, body) => {
-            if (error) {
-                return console.dir(error);
-            }
-
-            Response.Image = JSON.parse(body);
-
-            console.log(Response.Image);
-        })
-        .pipe(Request.get(mongoURL, (error, response, body) => {
-            if (error) {
-                return console.dir(error);
-            }
-            var jsondata = JSON.parse(body);
-            newBody = jsondata.filter(function (o) {
-                return (o.class === mongoclass)
-            })
-            Response.Count = newBody.length;
-            console.log(Response.Count);
-        }));
-
-    //send response to processAPI; timeout so mongo can respond ^^
-    res.setTimeout(500, function () {
-        res.send(JSON.stringify(Response))
-        delete Response.Count;
-        delete Response.Image;
-    });
+    Response = Controller(mongo, mongoclass, res);
+    // res.send(JSON.stringify(Response));
+        
 });
+
 app.listen(serverPort, function () {
     console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
 });
