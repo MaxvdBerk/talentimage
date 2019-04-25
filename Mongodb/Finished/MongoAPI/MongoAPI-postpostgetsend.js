@@ -2,11 +2,7 @@ var Request = require("request-promise");
 var express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
-<<<<<<< HEAD
-var mongoURL = "http://mongodb01-grouchy-oribi.eu-gb.mybluemix.net/api/Images"; // restApiRoot (/api), localhost and port from config.json (talentimage/Mongodb/ServerMongoFoto/server/)
-=======
 var mongoURL = "https://mongodb01-grouchy-oribi.eu-gb.mybluemix.net/api/Images"; // restApiRoot (/api), localhost and port from config.json (talentimage/Mongodb/ServerMongoFoto/server/)
->>>>>>> a2d710f7ca859a6875ecf910983cca0e9f1ea45b
 var serverPort = process.env.PORT || 4000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
